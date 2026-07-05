@@ -21,27 +21,19 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libsqlite3-dev lld libffi-dev libssl-dev autoconf automake libtool libtool-bin pkg-config zlib1g-dev
         pip install --upgrade pip
-        pip install buildozer cython==0.29.36
-
-    - name: Buat Konfigurasi APK Instan
-      run: |
-        buildozer init
-        sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
-        sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
-        sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
-
-    - name: Taktik Unduh Template Antipeluru
-      run: |
-        # Membuat foldernya secara paksa agar tidak hilang
-        mkdir -p ~/.buildozer/android/platform/android-sdk/templates/
-        
-        # Mengunduh gambar tiruan langsung ke folder sistem agar buildozer terkecoh
-        curl -o ~/.buildozer/android/platform/android-sdk/templates/gradient.png https://raw.githubusercontent.com/kivy/buildozer/master/buildozer/default.spec --create-dirs || true
-        touch ~/.buildozer/android/platform/android-sdk/templates/gradient.png
+        pip install "buildozer<1.6.0" cython==0.29.36
 
     - name: Proses Merakit APK Android
       run: |
-        # Gunakan perintah khusus untuk memaksa buildozer mengabaikan error template
+        # Buat konfigurasi standar
+        buildozer init
+        
+        # Setel pengaturan dasar langsung di dalam file spesifikasi
+        sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
+        sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
+        sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
+        
+        # Jalankan proses rakit secara bersih
         yes | buildozer -v android debug
 
     - name: Simpan Hasil File APK Matang
