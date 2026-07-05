@@ -5,17 +5,41 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Ambil Kode Python
       uses: actions/checkout@v3
 
-    - name: Proses Merakit APK Otomatis (Jalur Resmi)
-      uses: ArtemSBulgakov/buildozer-action@v1
+    - name: Siapkan Sistem Linux dan Python Stabil
+      uses: actions/setup-python@v4
       with:
-        command: buildozer -v android debug
-        repository_txt: true
+        python-version: '3.10'
+
+    - name: Instal Paket Pendukung Android resmi
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld
+
+    - name: Kunci Versi Buildozer Stabil
+      run: |
+        pip install --upgrade pip
+        pip install Cython==0.29.36
+        pip install buildozer==1.5.0
+
+    - name: Proses Merakit APK Tanpa Docker
+      run: |
+        buildozer init
+        # Setel lisensi dan nama aplikasi
+        sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
+        sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
+        sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
+        
+        # Kunci versi Python-for-Android agar tidak mengambil versi rusak di internet
+        sed -i 's/#p4a.branch = master/p4a.branch = release-2024.01.21/' buildozer.spec
+        
+        # Jalankan kompilasi langsung
+        yes | buildozer -v android debug
 
     - name: Simpan Hasil File APK Matang
       uses: actions/upload-artifact@v4
