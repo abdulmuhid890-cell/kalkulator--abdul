@@ -5,34 +5,35 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Ambil Kode Python
       uses: actions/checkout@v3
 
-    - name: Siapkan Sistem Linux dan Python
+    - name: Siapkan Python Stabil
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Instal Kivy dan Buildozer Terbaru
+    - name: Instal Paket Sistem Linux
       run: |
         sudo apt-get update
-        sudo apt-get install -y libsqlite3-dev lld libffi-dev libssl-dev autoconf automake libtool pkg-config zlib1g-dev
-        pip install --upgrade pip
-        pip install buildozer cython==0.29.36
+        sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld
 
-    - name: Buat Konfigurasi APK Instan
+    - name: Instal Buildozer
       run: |
-        buildozer init
-        sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
-        sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
-        sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
-        sed -i 's/# android.ndk_api = 21/android.ndk_api = 21/' buildozer.spec
+        python -m pip install --upgrade pip
+        pip install Cython==0.29.36 buildozer==1.5.0
 
     - name: Proses Merakit APK Android
       run: |
+        # Jika belum ada file spec, kita buat baru
+        if [ ! -f buildozer.spec ]; then
+          buildozer init
+        fi
+        
+        # Jalankan perintah rakit otomatis dan setujui lisensi SDK
         yes | buildozer -v android debug
 
     - name: Simpan Hasil File APK Matang
