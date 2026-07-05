@@ -26,21 +26,22 @@ jobs:
         python -m pip install --upgrade pip
         pip install Cython==0.29.36 buildozer==1.5.0
 
-    - name: Proses Bersihkan Spesifikasi dan Rakit APK
+    - name: Proses Merakit APK Tanpa Beban Musik
       run: |
-        # Buat ulang file spesifikasi murni agar teks rusak sebelumnya hilang
+        # Hapus file lama dan buat spec baru yang segar
         rm -f buildozer.spec
         buildozer init
         
-        # Setel konfigurasi dasar yang aman dan otomatis
+        # Setel konfigurasi dasar langsung
         sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
         sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
         sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
         
-        # Gunakan requirements standar tanpa memaksa micro-version yang bikin crash di G14
-        sed -i 's/requirements = python3,kivy/requirements = python3,kivy/' buildozer.spec
+        # UTAMAKAN INI: Matikan total modul musik SDL2_mixer yang membuat log terpotong di G16.jpeg
+        sed -i 's/#android.services =/android.services = /' buildozer.spec
+        sed -i 's/requirements = python3,kivy/requirements = python3==3.10.12,kivy==2.2.1/' buildozer.spec
         
-        # Jalankan rakitan tenang tanpa -v
+        # Jalankan rakitan tenang tanpa mencetak baris berulang-ulang
         yes | buildozer android debug
 
     - name: Simpan Hasil File APK Matang
