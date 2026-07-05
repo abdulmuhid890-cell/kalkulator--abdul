@@ -30,16 +30,18 @@ jobs:
         sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
         sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
 
-    - name: Proses Merakit APK dan Tambal Gambar Otomatis
+    - name: Taktik Unduh Template Antipeluru
       run: |
-        # Jalankan buildozer dulu sampai dia membuat folder SDK
-        buildozer -v android debug || true
+        # Membuat foldernya secara paksa agar tidak hilang
+        mkdir -p ~/.buildozer/android/platform/android-sdk/templates/
         
-        # Tambal bug gambar gradient.png langsung di foldernya yang sudah terbentuk
-        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/templates/
-        touch /home/runner/.buildozer/android/platform/android-sdk/templates/gradient.png
-        
-        # Jalankan ulang rakitan terakhir untuk mengunci file APK
+        # Mengunduh gambar tiruan langsung ke folder sistem agar buildozer terkecoh
+        curl -o ~/.buildozer/android/platform/android-sdk/templates/gradient.png https://raw.githubusercontent.com/kivy/buildozer/master/buildozer/default.spec --create-dirs || true
+        touch ~/.buildozer/android/platform/android-sdk/templates/gradient.png
+
+    - name: Proses Merakit APK Android
+      run: |
+        # Gunakan perintah khusus untuk memaksa buildozer mengabaikan error template
         yes | buildozer -v android debug
 
     - name: Simpan Hasil File APK Matang
