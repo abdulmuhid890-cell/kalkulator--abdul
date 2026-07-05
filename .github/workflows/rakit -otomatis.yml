@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Instal Paket Pendukung Android Resmi
+    - name: Paket Pendukung Android Resmi
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld openjdk-17-jdk
@@ -26,22 +26,28 @@ jobs:
         python -m pip install --upgrade pip
         pip install Cython==0.29.36 buildozer==1.5.0
 
-    - name: Proses Merakit APK Tanpa Beban Musik
+    - name: Proses Kunci Konfigurasi dan Rakit APK
       run: |
-        # Hapus file lama dan buat spec baru yang segar
+        # Hapus file lama jika ada
         rm -f buildozer.spec
-        buildozer init
         
-        # Setel konfigurasi dasar langsung
-        sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
-        sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
-        sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
+        # TRIK AMAN: Tulis ulang file spec murni secara langsung (Anti-Meleset)
+        cat << 'EOF' > buildozer.spec
+        [app]
+        title = Kalkulator Abdul
+        package.name = kalkulatorabdul
+        package.domain = org.abdul
+        source.dir = .
+        source.include_exts = py,png,jpg,kv,atlas
+        version = 0.1
+        requirements = python3==3.10.12,kivy==2.2.1
+        orientation = portrait
+        fullscreen = 1
+        android.archs = armeabi-v7a, arm64-v8a
+        android.accept_sdk_license = True
+        EOF
         
-        # UTAMAKAN INI: Matikan total modul musik SDL2_mixer yang membuat log terpotong di G16.jpeg
-        sed -i 's/#android.services =/android.services = /' buildozer.spec
-        sed -i 's/requirements = python3,kivy/requirements = python3==3.10.12,kivy==2.2.1/' buildozer.spec
-        
-        # Jalankan rakitan tenang tanpa mencetak baris berulang-ulang
+        # Jalankan rakitan dalam mode tenang
         yes | buildozer android debug
 
     - name: Simpan Hasil File APK Matang
