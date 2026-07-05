@@ -16,24 +16,23 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Instal Kivy dan Buildozer Terbaru
+    - name: Instal Paket Sistem Dasar Linux
       run: |
         sudo apt-get update
-        sudo apt-get install -y libsqlite3-dev lld libffi-dev libssl-dev autoconf automake libtool libtool-bin pkg-config zlib1g-dev
+        sudo apt-get install -y autoconf automake libtool libtool-bin pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld Wait
+
+    - name: Instal Kivy dan Buildozer Berpasangan
+      run: |
         pip install --upgrade pip
-        pip install "buildozer<1.6.0" cython==0.29.36
+        pip install cython==0.29.36
+        pip install buildozer
 
     - name: Proses Merakit APK Android
       run: |
-        # Buat konfigurasi standar
         buildozer init
-        
-        # Setel pengaturan dasar langsung di dalam file spesifikasi
         sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
         sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
         sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
-        
-        # Jalankan proses rakit secara bersih
         yes | buildozer -v android debug
 
     - name: Simpan Hasil File APK Matang
