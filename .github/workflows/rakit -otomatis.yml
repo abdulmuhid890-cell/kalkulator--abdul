@@ -19,7 +19,7 @@ jobs:
     - name: Instal Paket Sistem Dasar Linux
       run: |
         sudo apt-get update
-        sudo apt-get install -y autoconf automake libtool libtool-bin pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld Wait
+        sudo apt-get install -y autoconf automake libtool libtool-bin pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld
 
     - name: Instal Kivy dan Buildozer Berpasangan
       run: |
