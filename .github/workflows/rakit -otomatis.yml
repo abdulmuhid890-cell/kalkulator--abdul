@@ -11,17 +11,17 @@ jobs:
     - name: Ambil Kode Python
       uses: actions/checkout@v3
 
-    - name: Siapkan Sistem Linux dan Python 3.11
+    - name: Siapkan Sistem Linux dan Python 3.9
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.9'
 
     - name: Instal Paket Pendukung Android Resmi
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld
 
-    - name: Kunci Versi Buildozer Stabil
+    - name: Instal Buildozer Stabil
       run: |
         python -m pip install --upgrade pip
         pip install Cython==0.29.36
@@ -35,8 +35,8 @@ jobs:
         sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
         sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
         
-        # Selaraskan target python di dalam spesifikasi buildozer
-        sed -i 's/#requirements = python3,kivy/requirements = python3==3.11.1,kivy/' buildozer.spec
+        # Kunci target APK agar menggunakan Python 3.9 murni
+        sed -i 's/#requirements = python3,kivy/requirements = python3==3.9.9,kivy/' buildozer.spec
         sed -i 's/#p4a.branch = master/p4a.branch = release-2024.01.21/' buildozer.spec
         
         # Jalankan kompilasi langsung
