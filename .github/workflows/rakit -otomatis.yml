@@ -30,8 +30,16 @@ jobs:
         sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
         sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
 
-    - name: Proses Merakit APK Android
+    - name: Proses Merakit APK dan Tambal Gambar Otomatis
       run: |
+        # Jalankan buildozer dulu sampai dia membuat folder SDK
+        buildozer -v android debug || true
+        
+        # Tambal bug gambar gradient.png langsung di foldernya yang sudah terbentuk
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/templates/
+        touch /home/runner/.buildozer/android/platform/android-sdk/templates/gradient.png
+        
+        # Jalankan ulang rakitan terakhir untuk mengunci file APK
         yes | buildozer -v android debug
 
     - name: Simpan Hasil File APK Matang
