@@ -29,7 +29,6 @@ jobs:
         sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
         sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
         sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
-        sed -i 's/# android.ndk_api = 21/android.ndk_api = 21/' buildozer.spec
 
     - name: Proses Merakit APK Android
       run: |
