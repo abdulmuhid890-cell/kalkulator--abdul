@@ -11,24 +11,34 @@ jobs:
     - name: Ambil Kode Python
       uses: actions/checkout@v3
 
-    - name: Siapkan Sistem Linux dan Python
+    - name: Siapkan Sistem Linux dan Python 3.9
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
-    - name: Instal Alat Rakit
+    - name: Instal Paket Pendukung Android Resmi
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld
-        pip install --upgrade pip
+
+    - name: Instal Buildozer Stabil
+      run: |
+        python -m pip install --upgrade pip
         pip install Cython==0.29.36 buildozer==1.5.0
 
-    - name: Proses Merakit APK Android
+    - name: Proses Merakit APK Tanpa Audio
       run: |
         buildozer init
+        # Setel lisensi dan nama aplikasi
         sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
         sed -i 's/title = My Application/title = Kalkulator Abdul/' buildozer.spec
         sed -i 's/package.name = myapp/package.name = kalkulatorabdul/' buildozer.spec
+        
+        # PERINTAH SAKTI: Matikan modul suara/musik SDL2 yang bikin macet di G6.jpeg
+        sed -i 's/#android.services =/android.services = /' buildozer.spec
+        sed -i 's/requirements = python3,kivy/requirements = python3==3.9.9,kivy/' buildozer.spec
+        
+        # Jalankan kompilasi langsung
         yes | buildozer -v android debug
 
     - name: Simpan Hasil File APK Matang
