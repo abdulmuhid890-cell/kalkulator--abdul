@@ -20,7 +20,7 @@ version = 0.1
 
 # (list) Application requirements
 # SANGAT PENTING: Dikunci di versi stabil agar tidak memicu eror 3.14.2 lagi
-requirements = python3==3.10.12,kivy==2.2.1
+requirements = python3==3,kivy
 
 # (str) Supported orientations (landscape, portrait or all)
 orientation = portrait
