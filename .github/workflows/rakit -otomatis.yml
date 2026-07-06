@@ -5,30 +5,31 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    # MENGUNCI SERVER KE VERSI LAWAS (Bebas dari Python 3.14)
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Ambil Kode Python
       uses: actions/checkout@v4
 
-    - name: Siapkan Sistem Linux dan Python Bawaan
+    - name: Siapkan Sistem Linux dan Python 3.10
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
-    - name: Paket Perkakas Android Super Lengkap
+    - name: Paket Pendukung Android Lengkap
       run: |
         sudo apt-get update
-        sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld openjdk-17-jdk git zip unzip patch gzip bzip2 tar
+        sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libffi-dev libssl-dev libsqlite3-dev lld openjdk-17-jdk git zip unzip patch
 
-    - name: Instal Buildozer Resmi Standar
+    - name: Instal Buildozer Sesuai Versi Server
       run: |
         python -m pip install --upgrade pip
         pip install cython==0.29.36 buildozer==1.5.0
 
     - name: Proses Langsung Rakit APK
       run: |
-        # Jalankan rakitan murni dengan perkakas lengkap
+        # Jalankan rakitan murni tanpa gangguan versi eksperimental
         yes | buildozer android debug
         
     - name: Simpan Hasil File APK Matang
